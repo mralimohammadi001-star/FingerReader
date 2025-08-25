@@ -7,6 +7,13 @@ If you encounter any bugs or issues, feel free to report them to my Gmail with t
 
 ## ⚙️ Installation Guide
 
+### Requements:
+
+    Python ver 3.x
+    Updated OS
+    2 Gb Ram
+    Updated drivers
+    
 ### 🐧 Linux :
 
 ```bash
@@ -23,8 +30,8 @@ cp -r data dist/
 
 ```bash
 cd ...\FingerReader
-pyhton -m venv venv
-source venv\Scripts\activate
+python -m venv venv
+venv\Scripts\activate
 pip install -r requirements.txt
 pyinstaller --onefile --windowed main.py
 xcopy data dist /E /I
@@ -56,4 +63,3 @@ Please send any bug reports or suggestions to:
 email:mr.alimohammadi001@gmail.com
 📌 Subject: "Finger Reader"
 ```
-
