@@ -10,14 +10,16 @@ If you encounter any bugs or issues, feel free to report them to my Gmail with t
 ### Requements:
 
     Python ver 3.x
-    Updated OS
-    2 Gb Ram
     Updated drivers
-    
+    Updated OS
+    2Gb Ram
+    Git
+
 ### 🐧 Linux :
 
 ```bash
-cd .../FingerReader
+cd .../OptionalPath
+git clone https://github.com/mralimohammadi001-star/FingerReader.git
 python3 -m venv venv
 source venv/bin/activate
 pip install jdatetime kivy pyinstaller
@@ -29,7 +31,8 @@ cp -r data dist/
 ### 🪟 Windows (CMD) :
 
 ```bash
-cd ...\FingerReader
+cd ...\OptionalPath
+git clone https://github.com/mralimohammadi001-star/FingerReader.git
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
