@@ -372,7 +372,7 @@ class EnterLayout(BoxLayout):
         if self.widgets[21].active :
             try :
                 if self.widgets[25].active :
-                    datetime_str = f'{self.widgets[29].text} {self.widgets[32].text}'
+                    datetime_str = f'{self.widgets[24].text} {self.widgets[27].text}'
                     from_datetime = jdatetime.datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S')
                 else :
                     from_datetime = jdatetime.datetime.strptime(self.widgets[24].text ,'%Y-%m-%d').replace(hour=0 ,minute=0 ,second=0)
