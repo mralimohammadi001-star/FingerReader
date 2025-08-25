@@ -10,7 +10,7 @@ If you encounter any bugs or issues, feel free to report them to my Gmail with t
 ### 🐧 Linux :
 
 ```bash
-cd path/to/FingerReader
+cd .../FingerReader
 python3 -m venv venv
 source venv/bin/activate
 pip install jdatetime kivy pyinstaller
