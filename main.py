@@ -8,8 +8,9 @@ from kivy.uix.label import Label
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.spinner import Spinner
 from backend.records import Records
-import jdatetime
+from datetime import datetime
 from kivy.uix.screenmanager import ScreenManager, Screen
+import jdatetime
 
 class ReportLayout(ScrollView):
     def __init__(self ,**kwargs):
@@ -54,7 +55,7 @@ class EnterLayout(BoxLayout):
         super().__init__(**kwargs)
 
         mybox = BoxLayout(orientation='vertical' ,size_hint_y=None)
-        self.widgets = [None] * 36
+        self.widgets = [None] * 37
         boxes = [None] * 13
         self.rec = None
 
@@ -117,8 +118,9 @@ class EnterLayout(BoxLayout):
 
         self.widgets[33] = Button(text='submit' ,size_hint=(1 ,None) ,height = 32)
         self.widgets[33].bind(on_press=self.submit)
-        self.widgets[34] = CheckBox(size_hint_y=None ,height=32 ,size_hint_x=0.05 ,active=True)
-        self.widgets[35] = Label(size_hint_x=0.2 ,text='Insert names' ,font_size=18 ,size_hint_y=None ,height=32)
+        self.widgets[34] = Spinner(text='Shamsi' ,size_hint=[.2,None] ,height=32 ,values=['Shamsi' ,'Miladi'])
+        self.widgets[35] = CheckBox(size_hint_y=None ,height=32 ,size_hint_x=0.05 ,active=True)
+        self.widgets[36] = Label(size_hint_x=0.2 ,text='Insert names' ,font_size=18 ,size_hint_y=None ,height=32)
 
         boxes[0] = GridLayout(cols=3,size_hint_y=None ,spacing=13 ,padding=[13 ,5 ,13 ,5])
         boxes[0].add_widget(self.widgets[0])
@@ -193,6 +195,7 @@ class EnterLayout(BoxLayout):
         boxes[12].add_widget(self.widgets[33])
         boxes[12].add_widget(self.widgets[34])
         boxes[12].add_widget(self.widgets[35])
+        boxes[12].add_widget(self.widgets[36])
         boxes[12].height = max([child.height for child in boxes[12].children]) + 13
 
 
@@ -329,7 +332,7 @@ class EnterLayout(BoxLayout):
                 self.widgets[32].text = ''
 
     def submit(self ,instanse) :
-        self.rec = Records([])
+        self.rec = Records(jallali=True) if self.widgets[34].text == 'Shamsi' else Records(jallali=False)
 
         if self.widgets[0].active :
             if self.rec.read(str(self.widgets[2].text)) :
@@ -346,7 +349,7 @@ class EnterLayout(BoxLayout):
             if self.widgets[3].active :
                 self.rec = self.rec.by_person(str(self.widgets[5].text))
                 self.widgets[33].text = 'submit'
-        except Exception as e :
+        except Exception :
             self.widgets[33].text = 'Invalid person code'
             return
 
@@ -373,28 +376,28 @@ class EnterLayout(BoxLayout):
             try :
                 if self.widgets[25].active :
                     datetime_str = f'{self.widgets[24].text} {self.widgets[27].text}'
-                    from_datetime = jdatetime.datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S')
+                    from_datetime = jdatetime.datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S') if self.widgets[34].text == 'Shamsi' else datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S')
                 else :
-                    from_datetime = jdatetime.datetime.strptime(self.widgets[24].text ,'%Y-%m-%d').replace(hour=0 ,minute=0 ,second=0)
+                    from_datetime = jdatetime.datetime.strptime(self.widgets[24].text ,'%Y-%m-%d').replace(hour=0 ,minute=0 ,second=0) if self.widgets[34].text == 'Shamsi' else datetime.strptime(self.widgets[24].text ,'%Y-%m-%d').replace(hour=0 ,minute=0 ,second=0)
 
                 if self.widgets[30].active :
                     datetime_str = f'{self.widgets[29].text} {self.widgets[32].text}'
-                    to_datetime = jdatetime.datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S')
+                    to_datetime = jdatetime.datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S') if self.widgets[34].text == 'Shamsi' else datetime.strptime(datetime_str ,'%Y-%m-%d %H:%M:%S')
                 else:
-                    to_datetime = jdatetime.datetime.strptime(self.widgets[29].text ,'%Y-%m-%d').replace(hour=23 ,minute=59 ,second=59)
+                    to_datetime = jdatetime.datetime.strptime(self.widgets[29].text ,'%Y-%m-%d').replace(hour=23 ,minute=59 ,second=59) if self.widgets[34].text == 'Shamsi' else datetime.strptime(self.widgets[29].text ,'%Y-%m-%d').replace(hour=23 ,minute=59 ,second=59)
 
                 self.widgets[33].text = 'submit'
-            except Exception as erorr :
+            except Exception :
                 self.widgets[33].text = 'Invalid date / time'
                 return
 
             self.rec = self.rec.by_datetime(from_datetime ,to_datetime)
         
         try :
-            if self.widgets[34].active :
+            if self.widgets[35].active :
                 self.rec = self.rec.get_names('data/persons.json')
                 self.widgets[33].text = 'submit'
-        except Exception as e :
+        except Exception :
             self.widgets[33].text = 'data/persons.json Not found'
             return
         kivy.get_report(self.rec)
