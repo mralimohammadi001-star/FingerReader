@@ -20,11 +20,12 @@ class Record() :
 
 class Records() :
     """Creates readable method of traffic & filter them"""
-    def __init__(self ,records):
+    def __init__(self ,records=[] ,jallali=True):
         self.records = records
+        self.jallali = jallali
     
     def latest_now(self):
-        return jdatetime.datetime.now().replace(hour=23 ,minute=59 ,second=59)
+        return jdatetime.datetime.now().replace(hour=23 ,minute=59 ,second=59) if self.jallali else datetime.datetime.now().replace(hour=23 ,minute=59 ,second=59)
 
     def read(self ,path_record):
         try:
@@ -39,7 +40,7 @@ class Records() :
         try :
             for line in lines :
                 date_time = str(line[1]+' '+line[2])
-                date_time = jdatetime.datetime.fromgregorian(date=datetime.strptime(date_time ,'%Y-%m-%d %H:%M:%S'))
+                date_time = jdatetime.datetime.fromgregorian(date=datetime.strptime(date_time ,'%Y-%m-%d %H:%M:%S')) if self.jallali else datetime.strptime(date_time ,'%Y-%m-%d %H:%M:%S')
                 person = line[0]
                 movement = 'login' if str(line[4]) == '0' else 'logout'
                 self.records.append(Record(person=person ,date_time=date_time ,movement=movement))
@@ -62,25 +63,25 @@ class Records() :
         for rec in self.records :
             if rec.person == str(person_code) :
                 filtered.append(rec)
-        return Records(filtered)
+        return Records(filtered ,self.jallali)
     
     def by_datetime(self ,early ,late):
         filtered = []
         for Record in self.records :
             if is_between(early ,Record.date_time ,late) :
                 filtered.append(Record)
-        return Records(filtered)
+        return Records(filtered ,self.jallali)
 
     def by_movement(self ,movement):
         filtered = []
         for rec in self.records :
             if rec.movement == movement :
                 filtered.append(rec)
-        return Records(filtered)
+        return Records(filtered ,self.jallali)
 
     def by_days_ago(self ,days):
         now = self.latest_now()
-        before = (now - jdatetime.timedelta(days=days)).replace(hour=0 ,minute=0 ,second=0)
+        before = (now - jdatetime.timedelta(days=days)).replace(hour=0 ,minute=0 ,second=0) if self.jallali else (now - datetime.timedelta(days=days)).replace(hour=0 ,minute=0 ,second=0)
         return self.by_datetime(before ,now)
 
     def by_today(self):
@@ -113,9 +114,10 @@ class Records() :
         return grouped
 
 if __name__ == '__main__' :
-    PiPi = Records([])
+    PiPi = Records([] ,False)
     print(PiPi.read('data/1_attlog.dat'))
-    PiPi = PiPi.by_datetime(jdatetime.datetime(hour=5 ,second=6 ,minute=10 ,day=6 ,month=10 ,year=1400),jdatetime.datetime(hour=5 ,second=6 ,minute=10 ,day=6 ,month=10 ,year=1404)).group_by_day()
+    #PiPi = PiPi.by_datetime(datetime.datetime(hour=5 ,second=6 ,minute=10 ,day=6 ,month=10 ,year=1400),jdatetime.datetime(hour=5 ,second=6 ,minute=10 ,day=6 ,month=10 ,year=1404)).group_by_day()
+    PiPi = PiPi.group_by_day
     for date ,group in PiPi.items() :
         print(f'\n\n{str(date)} :')
         for record in group :
